@@ -55,7 +55,7 @@ class Parser:
             self.sentences.append(clean_sentences)
 
     def remove_blacklist_words(self, temp_sentence_list):
-        with open("blacklist", 'r') as f:
+        with open("blacklist.txt", 'r') as f:
             blacklist = f.read().splitlines()
 
         clean_sentences = []
