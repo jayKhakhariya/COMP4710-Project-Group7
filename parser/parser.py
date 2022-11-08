@@ -5,6 +5,7 @@ import re  # regex
 """
 ; will be considered as a comma, which we're removing.
 , are removed
+" are removed
 . are considered as separate transactions.
 ? are considered as separate transactions.
 ! are considered as separate transactions.
@@ -41,15 +42,26 @@ class Parser:
                                   '\' ',
                                   ' \'']
 
-        with open("blacklist", 'r') as f:
-            blacklist = f.read().splitlines()
-
         for transcript in self.transcripts:
             temp = transcript.lower()
 
             # filter out the punctuations
             for thing in punctuations_to_remove:
                 temp = temp.replace(thing, ' ')
+
+            temp_sentence_list = re.split("\. |\? |! ", temp)
+            clean_sentences = self.remove_blacklist_words(temp_sentence_list)
+
+            self.sentences.append(clean_sentences)
+
+    def remove_blacklist_words(self, temp_sentence_list):
+        with open("blacklist", 'r') as f:
+            blacklist = f.read().splitlines()
+
+        clean_sentences = []
+
+        for item in temp_sentence_list:
+            temp = item
 
             # filters out blacklist words
             for thing in blacklist:
@@ -58,10 +70,15 @@ class Parser:
             # changes all multiple spaces to a single space
             temp = re.sub(" +", ' ', temp)
 
-            sentence_list = re.split("\. |\? |! ", temp)
-            self.sentences.append(sentence_list)
+            # removes leading and trailing spaces
+            temp = re.sub("^ | $", '', temp)
+
+            clean_sentences.append(temp)
+
+        return clean_sentences
 
 
+# the header positions in the csv file
 class FieldNames:
     talk_id = 0
     title = 1
@@ -84,4 +101,5 @@ class FieldNames:
     transcript = 18
 
 
+# opens and parses the english ted talk csv file
 Parser("../2020-05-01/ted_talks_en.csv")
