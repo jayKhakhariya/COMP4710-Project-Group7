@@ -13,27 +13,24 @@ import re  # regex
 
 
 class Parser:
-    transcripts = []
-    sentences = []
+    _clean_sentences = []
 
-    def __init__(self, filename):
-        self.get_transcripts(filename)
-        self.clean_transcripts()
+    def __init__(self, filename: str):
+        transcript_list = self.read_transcripts(filename)
+        self._clean_sentences = self.clean_transcripts(transcript_list)
 
-        test = self.sentences[0]
-        for sentence in test:
-            print(sentence)
+    def read_transcripts(self, filename: str) -> [str]:
+        transcripts = []
 
-    def get_transcripts(self, filename):
         with open(filename, 'r') as f:
             csv_reader = csv.reader(f)
 
             for row in csv_reader:
-                self.transcripts.append(row[FieldNames.transcript])
+                transcripts.append(row[FieldNames.transcript])
 
-            self.transcripts = self.transcripts[1:]  # don't care about the header
+            return transcripts[1:]  # don't care about the header
 
-    def clean_transcripts(self):
+    def clean_transcripts(self, transcript_list: [str]) -> [[str]]:
         punctuations_to_remove = [';',
                                   ',',
                                   ':',
@@ -42,30 +39,34 @@ class Parser:
                                   '\' ',
                                   ' \'']
 
-        for transcript in self.transcripts:
-            temp = transcript.lower()
-
-            # filter out the punctuations
-            for thing in punctuations_to_remove:
-                temp = temp.replace(thing, ' ')
-
-            temp_sentence_list = re.split("\. |\? |! ", temp)
-            clean_sentences = self.remove_blacklist_words(temp_sentence_list)
-
-            self.sentences.append(clean_sentences)
-
-    def remove_blacklist_words(self, temp_sentence_list):
         with open("blacklist.txt", 'r') as f:
             blacklist = f.read().splitlines()
 
+        sentences = []
+
+        for transcript in transcript_list:
+            temp = transcript.lower()
+
+            # filter out the mid sentence punctuations
+            for thing in punctuations_to_remove:
+                temp = temp.replace(thing, ' ')
+
+            # splits the text on end of sentence punctuation
+            temp_sentence_list = re.split("\. |\? |! ", temp)
+            clean_sentences = self.remove_words(temp_sentence_list, blacklist)
+            sentences.append(clean_sentences)
+
+        return sentences
+
+    def remove_words(self, sentence_list: [str], blacklist: [str]) -> [str]:
         clean_sentences = []
 
-        for item in temp_sentence_list:
+        for item in sentence_list:
             temp = item
 
             # filters out blacklist words
-            for thing in blacklist:
-                temp = re.sub(f" {thing}$|^{thing} | {thing} ", " ", temp)
+            for word in blacklist:
+                temp = re.sub(f" {word}$|^{word} | {word} ", " ", temp)
 
             # changes all multiple spaces to a single space
             temp = re.sub(" +", ' ', temp)
@@ -76,6 +77,9 @@ class Parser:
             clean_sentences.append(temp)
 
         return clean_sentences
+
+    def get_clean_sentences(self) -> [[str]]:
+        return self._clean_sentences
 
 
 # the header positions in the csv file
@@ -102,4 +106,8 @@ class FieldNames:
 
 
 # opens and parses the english ted talk csv file
-Parser("../2020-05-01/ted_talks_en.csv")
+transcript_sentences = Parser("../2020-05-01/ted_talks_en.csv").get_clean_sentences()
+
+# prints out the first transcript, clean sentence by clean sentence
+for sentence in transcript_sentences[0]:
+    print(sentence)
