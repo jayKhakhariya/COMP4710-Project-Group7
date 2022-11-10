@@ -67,7 +67,7 @@ class Parser:
 
             # filters out blacklist words
             for word in dirty_word_list:
-                if word not in blacklist:
+                if word != '' and word not in blacklist:
                     clean_word_list.append(word)
 
             # don't add empty sentences
