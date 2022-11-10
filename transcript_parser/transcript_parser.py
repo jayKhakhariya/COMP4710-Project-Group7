@@ -1,5 +1,6 @@
 import csv
 import re  # regex
+import constants
 
 
 """
@@ -39,7 +40,7 @@ class Parser:
                                   '\' ',
                                   ' \'']
 
-        with open("transcript_parser/blacklist.txt", 'r') as f:
+        with open(constants.blacklist_loc, 'r') as f:
             blacklist = set(f.read().splitlines())
 
         sentences = []
@@ -104,4 +105,4 @@ class FieldNames:
 
 
 # opens and parses the english ted talk csv file
-transcript_sentences = Parser("2020-05-01/ted_talks_en.csv").get_clean_sentences()
+transcript_sentences = Parser(constants.transcript_en_loc).get_clean_sentences()

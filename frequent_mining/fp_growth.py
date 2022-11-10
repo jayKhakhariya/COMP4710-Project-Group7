@@ -2,8 +2,9 @@ import pandas as pd
 from mlxtend.frequent_patterns import fpgrowth
 from mlxtend.preprocessing import TransactionEncoder
 from transcript_parser.transcript_parser import Parser
+import constants
 
-test = Parser("2020-05-01/ted_talks_en.csv").get_clean_sentences()
+test = Parser(constants.transcript_en_loc).get_clean_sentences()
 first_transcript = test[0]
 
 our_minsup = 3.0
