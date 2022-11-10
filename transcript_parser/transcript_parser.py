@@ -39,7 +39,7 @@ class Parser:
                                   '\' ',
                                   ' \'']
 
-        with open("blacklist.txt", 'r') as f:
+        with open("transcript_parser/blacklist.txt", 'r') as f:
             blacklist = set(f.read().splitlines())
 
         sentences = []
@@ -104,8 +104,4 @@ class FieldNames:
 
 
 # opens and parses the english ted talk csv file
-transcript_sentences = Parser("../2020-05-01/ted_talks_en.csv").get_clean_sentences()
-
-# prints out the first transcript, clean sentence by clean sentence
-for sentence in transcript_sentences[0]:
-    print(sentence)
+transcript_sentences = Parser("2020-05-01/ted_talks_en.csv").get_clean_sentences()
