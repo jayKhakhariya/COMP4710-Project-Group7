@@ -40,7 +40,7 @@ class Parser:
                                   ' \'']
 
         with open("blacklist.txt", 'r') as f:
-            blacklist = f.read().splitlines()
+            blacklist = set(f.read().splitlines())
 
         sentences = []
 
@@ -58,23 +58,21 @@ class Parser:
 
         return sentences
 
-    def remove_words(self, sentence_list: [str], blacklist: [str]) -> [str]:
+    def remove_words(self, sentence_list: [str], blacklist: set) -> [str]:
         clean_sentences = []
 
         for item in sentence_list:
-            temp = item
+            dirty_word_list = item.split(' ')
+            clean_word_list = []
 
             # filters out blacklist words
-            for word in blacklist:
-                temp = re.sub(f" {word}$|^{word} | {word} ", " ", temp)
+            for word in dirty_word_list:
+                if word not in blacklist:
+                    clean_word_list.append(word)
 
-            # changes all multiple spaces to a single space
-            temp = re.sub(" +", ' ', temp)
-
-            # removes leading and trailing spaces
-            temp = re.sub("^ | $", '', temp)
-
-            clean_sentences.append(temp)
+            # don't add empty sentences
+            if len(clean_word_list) > 0:
+                clean_sentences.append(clean_word_list)
 
         return clean_sentences
 
