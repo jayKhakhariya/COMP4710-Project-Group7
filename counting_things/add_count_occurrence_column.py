@@ -50,7 +50,7 @@ new_dataset = AddCountOccurrenceColumn(constants.transcript_en_loc, laughter_str
 Only printing the first 2 rows, to show the column names, and the count for
 how many occurrences of \"(laughter)\" were found in the first transcript.
 """
-for row in range(2):
-    print(f"Row {row}")
-    print(new_dataset[row])
+for i in range(2):
+    print(f"Row {i}")
+    print(new_dataset[i])
     print()
