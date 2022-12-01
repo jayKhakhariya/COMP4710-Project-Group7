@@ -23,7 +23,7 @@ class Parser:
     def read_transcripts(self, filename: str) -> [str]:
         transcripts = []
 
-        with open(filename, 'r') as f:
+        with open(filename, 'r', encoding="utf-8") as f:
             csv_reader = csv.reader(f)
 
             for row in csv_reader:
