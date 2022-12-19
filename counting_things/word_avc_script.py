@@ -5,16 +5,23 @@ from transcript_parser.transcript_parser import FieldNames
 word = "(applause)"
 dataset_w_word = AddCountOccurrenceColumn(constants.transcript_en_loc, word).data_set
 
-word_count_categories = [0]
-n_minus_2 = 0
-n_minus_1 = 1
+# first 3 values (ignoring the duplicate 1) from the fibonacci sequence
+word_count_categories = [0, 1, 2]
 
-for i in range(10):
-    curr_category = n_minus_1 + n_minus_2
-    word_count_categories.append(curr_category)
+# find the maximum word_count to build the word_count_categories off of
+max_word_count = -1
 
-    n_minus_2 = n_minus_1
-    n_minus_1 = curr_category
+for talk in dataset_w_word[1:]:
+    word_count = int(talk[-1])  # the last category was the one added on
+
+    if word_count > max_word_count:
+        max_word_count = word_count
+
+print(f"The largest count for {word} is {max_word_count}.")
+
+# automatically builds out the fibonacci word_count_categories
+while max_word_count > word_count_categories[-1]:
+    word_count_categories.append(word_count_categories[-1] + word_count_categories[-2])
 
 view_count_categories = [1e4, 1e5, 1e6, 1e7, 1e8]
 
@@ -41,10 +48,7 @@ for talk in dataset_w_word[1:]:
             view_count_index = i
             break
 
-    if word_count_index == -1:
-        print(f"The laugh count in this talk is outside our categories. "
-              f"It has a count of {word_count}.")
-    elif view_count_index == -1:
+    if view_count_index == -1:
         print(f"The view count in this talk is outside our categories. "
               f"It has a count of {view_count}.")
     else:
