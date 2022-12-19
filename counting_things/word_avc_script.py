@@ -2,17 +2,19 @@ import constants
 from add_count_occurrence_column import AddCountOccurrenceColumn
 from transcript_parser.transcript_parser import FieldNames
 
-word = "(laughter)"
+word = "(applause)"
 dataset_w_word = AddCountOccurrenceColumn(constants.transcript_en_loc, word).data_set
 
 word_count_categories = [0]
-step_size = 10
-max_value = 80
-curr_category = 0
+n_minus_2 = 0
+n_minus_1 = 1
 
-while curr_category < max_value:
-    curr_category += step_size
+for i in range(10):
+    curr_category = n_minus_1 + n_minus_2
     word_count_categories.append(curr_category)
+
+    n_minus_2 = n_minus_1
+    n_minus_1 = curr_category
 
 view_count_categories = [1e4, 1e5, 1e6, 1e7, 1e8]
 
