@@ -22,17 +22,21 @@ output_list = results.values.tolist()
 size = len(first_transcript)
 sorted_list = sorted(output_list)
 
-# for sup, set_val in sorted_list:
-#     print(f"{set_val}: {size * sup}")
+for sup, set_val in sorted_list:
+    print(f"{set_val}: {size * sup}")
 
 print(f"\nAnalysing topic data:\n")
 topics = data.get_topics()
 te2 = TransactionEncoder()
 te2_ary = te2.fit(topics).transform(topics)
 df = pd.DataFrame(te2_ary, columns=te2.columns_)
-print(df)
 topic_results = fpgrowth(df, min_support=0.01, use_colnames=True)
-print(topic_results)
+topic_list = topic_results.values.tolist()
+
+sorted_topic_results = sorted(topic_list)
+
+for sup, set_val in sorted_topic_results:
+    print(f"{set_val}: {sup}")
 
 
-print(f"Finished.")
+print(f"\nFinished.")
