@@ -37,7 +37,7 @@ class Parser:
 
     def read_topics_by_viewcount(self, filename: str) -> [[str]]:
 
-        topics = [[]] * len(self._view_count_categories)
+        topics = [[] for _ in range(len(self._view_count_categories))]
 
         with open(filename, 'r', encoding="utf-8") as f:
             csv_reader = csv.reader(f)
