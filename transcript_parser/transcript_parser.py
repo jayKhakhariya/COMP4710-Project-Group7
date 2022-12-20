@@ -19,6 +19,7 @@ class Parser:
     def __init__(self, filename: str):
         transcript_list = self.read_transcripts(filename)
         self._clean_sentences = self.clean_transcripts(transcript_list)
+        self._topics = self.read_topics(filename)
 
     def read_transcripts(self, filename: str) -> [str]:
         transcripts = []
@@ -30,6 +31,18 @@ class Parser:
                 transcripts.append(row[FieldNames.transcript])
 
             return transcripts[1:]  # don't care about the header
+
+    def read_topics(self, filename: str) -> [[str]]:
+        topics = []
+
+        with open(filename, 'r', encoding="utf-8") as f:
+            csv_reader = csv.reader(f)
+
+            for row in csv_reader:
+                t = row[FieldNames.topics].replace('[', "").replace(']', "").replace("'", "").split(",")
+                topics.append(t)
+
+            return topics[1:]  # don't care about the header
 
     def clean_transcripts(self, transcript_list: [str]) -> [[str]]:
         punctuations_to_remove = [';',
@@ -79,6 +92,9 @@ class Parser:
 
     def get_clean_sentences(self) -> [[str]]:
         return self._clean_sentences
+
+    def get_topics(self) -> [[str]]:
+        return self._topics
 
 
 # the header positions in the csv file
