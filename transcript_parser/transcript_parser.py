@@ -16,10 +16,13 @@ import constants
 class Parser:
     _clean_sentences = []
 
+    _view_count_categories = [10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0]
+
     def __init__(self, filename: str):
+        
         transcript_list = self.read_transcripts(filename)
         self._clean_sentences = self.clean_transcripts(transcript_list)
-        self._topics = self.read_topics(filename)
+        self._topics = self.read_topics_by_viewcount(filename)
 
     def read_transcripts(self, filename: str) -> [str]:
         transcripts = []
@@ -32,17 +35,22 @@ class Parser:
 
             return transcripts[1:]  # don't care about the header
 
-    def read_topics(self, filename: str) -> [[str]]:
-        topics = []
+    def read_topics_by_viewcount(self, filename: str) -> [[str]]:
+
+        topics = [[]] * len(self._view_count_categories)
 
         with open(filename, 'r', encoding="utf-8") as f:
             csv_reader = csv.reader(f)
-
+            csv_reader.__next__() # skip the first line
             for row in csv_reader:
                 t = row[FieldNames.topics].replace('[', "").replace(']', "").replace("'", "").split(",")
-                topics.append(t)
+                viewCount = row[FieldNames.views] 
+                for category in range(len(self._view_count_categories)):
+                    if(int(viewCount) < self._view_count_categories[category]):
+                        topics[category].append(t)
+                        break
 
-            return topics[1:]  # don't care about the header
+            return topics
 
     def clean_transcripts(self, transcript_list: [str]) -> [[str]]:
         punctuations_to_remove = [';',

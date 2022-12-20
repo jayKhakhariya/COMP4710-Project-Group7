@@ -27,16 +27,16 @@ for sup, set_val in sorted_list:
 
 print(f"\nAnalysing topic data:\n")
 topics = data.get_topics()
-te2 = TransactionEncoder()
-te2_ary = te2.fit(topics).transform(topics)
-df = pd.DataFrame(te2_ary, columns=te2.columns_)
-topic_results = fpgrowth(df, min_support=0.01, use_colnames=True)
-topic_list = topic_results.values.tolist()
+# te2 = TransactionEncoder()
+# te2_ary = te2.fit(topics).transform(topics)
+# df = pd.DataFrame(te2_ary, columns=te2.columns_)
+# topic_results = fpgrowth(df, min_support=0.01, use_colnames=True)
+# topic_list = topic_results.values.tolist()
 
-sorted_topic_results = sorted(topic_list)
+# sorted_topic_results = sorted(topic_list)
 
-for sup, set_val in sorted_topic_results:
-    print(f"{set_val}: {sup}")
+# for sup, set_val in sorted_topic_results:
+#     print(f"{set_val}: {sup}")
 
 
 print(f"\nFinished.")
