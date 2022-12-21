@@ -27,16 +27,25 @@ for sup, set_val in sorted_list:
 
 print(f"\nAnalysing topic data:\n")
 topics = data.get_topics()
-# te2 = TransactionEncoder()
-# te2_ary = te2.fit(topics).transform(topics)
-# df = pd.DataFrame(te2_ary, columns=te2.columns_)
-# topic_results = fpgrowth(df, min_support=0.01, use_colnames=True)
-# topic_list = topic_results.values.tolist()
+categories = data.get_viewcount_categories()
 
-# sorted_topic_results = sorted(topic_list)
+i = 0
+with open("output.txt", "w") as output_file:
+    for t in topics:
+    
+        te = TransactionEncoder()
+        te_ary = te.fit(t).transform(t)
+        df = pd.DataFrame(te_ary, columns=te.columns_)
+        topic_results = fpgrowth(df, min_support=0.1, use_colnames=True)
+        topic_list = topic_results.values.tolist()
 
-# for sup, set_val in sorted_topic_results:
-#     print(f"{set_val}: {sup}")
+        sorted_topic_results = sorted(topic_list)
+
+        output_file.write(f"\n\nTopics with at least {categories[i]} views:")
+        for sup, set_val in sorted_topic_results:
+            s = f"\n{set_val}: {sup}".replace("frozenset", "").replace("(", "").replace(")", "")
+            output_file.write(s)
+        i += 1
 
 
 print(f"\nFinished.")

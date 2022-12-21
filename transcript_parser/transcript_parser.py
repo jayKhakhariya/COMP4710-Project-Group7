@@ -104,6 +104,9 @@ class Parser:
     def get_topics(self) -> [[str]]:
         return self._topics
 
+    def get_viewcount_categories(self) -> [[int]]:
+        return self._view_count_categories
+
 
 # the header positions in the csv file
 class FieldNames:
