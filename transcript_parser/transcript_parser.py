@@ -23,6 +23,7 @@ class Parser:
         transcript_list = self.read_transcripts(filename)
         self._clean_sentences = self.clean_transcripts(transcript_list)
         self._topics = self.read_topics_by_viewcount(filename)
+        self._topics_by_year = self.read_topics_by_year_viewcount(filename)
 
     def read_transcripts(self, filename: str) -> [str]:
         transcripts = []
@@ -51,6 +52,33 @@ class Parser:
                         break
 
             return topics
+
+    def read_topics_by_year_viewcount(self, filename):
+        years = {}
+        with open(filename, 'r', encoding="utf-8") as f:
+            csv_reader = csv.reader(f)
+            csv_reader.__next__() # skip the first line
+
+            for row in csv_reader:
+                topics = row[FieldNames.topics].replace('[', "").replace(']', "").replace("'", "").split(",") #change to arr
+                viewCount = row[FieldNames.views]
+                val = (topics, viewCount)
+                y = row[FieldNames.published_date].split("-")[0]
+                if y in years:
+                    years[y].append(val)
+                else:
+                    years[y] = [val]
+
+        topicsByYear = []
+        for val in years.values():
+            topics = [[] for _ in range(len(self._view_count_categories))]
+            for (t, viewCount) in val:
+                for category in range(len(self._view_count_categories)):
+                    if(int(viewCount) < self._view_count_categories[category]):
+                        topics[category].append(t)
+                        break
+            topicsByYear.append(topics)
+        return topicsByYear
 
     def clean_transcripts(self, transcript_list: [str]) -> [[str]]:
         punctuations_to_remove = [';',
@@ -106,6 +134,9 @@ class Parser:
 
     def get_viewcount_categories(self) -> [[int]]:
         return self._view_count_categories
+
+    def get_topics_by_year_viewcount(self) -> [[int]]:
+        return self._topics_by_year
 
 
 # the header positions in the csv file

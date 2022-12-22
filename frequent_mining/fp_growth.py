@@ -22,10 +22,10 @@ output_list = results.values.tolist()
 size = len(first_transcript)
 sorted_list = sorted(output_list)
 
-for sup, set_val in sorted_list:
-    print(f"{set_val}: {size * sup}")
+# for sup, set_val in sorted_list:
+#     print(f"{set_val}: {size * sup}")
 
-print(f"\nAnalysing topic data:\n")
+print(f"Analysing topic data:\n")
 topics = data.get_topics()
 categories = data.get_viewcount_categories()
 
@@ -48,4 +48,28 @@ with open("output.txt", "w") as output_file:
         i += 1
 
 
-print(f"\nFinished.")
+print(f"Analysing topics by year:\n")
+topics_by_year = data.get_topics_by_year_viewcount()
+
+i = 0
+with open("topics_by_year_output.txt", "w") as output_file:
+    for year in topics_by_year:
+        output_file.write(f"\nFrequent Topics in the year {i}:") # should be in year - dont have it owkring
+        for t in year:
+            te = TransactionEncoder()
+            te_ary = te.fit(t).transform(t)
+            df = pd.DataFrame(te_ary, columns=te.columns_)
+            topic_results = fpgrowth(df, min_support=0.6, use_colnames=True)
+            topic_list = topic_results.values.tolist()
+
+            sorted_topic_results = sorted(topic_list)
+
+            output_file.write(f"\n\nTopics with at least {categories[i]} views:")
+            for sup, set_val in sorted_topic_results:
+                s = f"\n{set_val}: {sup}".replace("frozenset", "").replace("(", "").replace(")", "")
+                output_file.write(s)
+            i += 1
+        i = 0
+
+
+print(f"\n\nFinished.")
