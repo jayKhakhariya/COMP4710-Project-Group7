@@ -44,7 +44,7 @@ class Parser:
             csv_reader = csv.reader(f)
             csv_reader.__next__() # skip the first line
             for row in csv_reader:
-                t = row[FieldNames.topics].replace('[', "").replace(']', "").replace("'", "").split(",")
+                t = row[FieldNames.topics].replace('[', "").replace(']', "").replace("'", "").replace(" ", "").split(",")
                 viewCount = row[FieldNames.views] 
                 for category in range(len(self._view_count_categories)):
                     if(int(viewCount) < self._view_count_categories[category]):
@@ -60,7 +60,9 @@ class Parser:
             csv_reader.__next__() # skip the first line
 
             for row in csv_reader:
-                topics = row[FieldNames.topics].replace('[', "").replace(']', "").replace("'", "").split(",") #change to arr
+                topics = row[FieldNames.topics].replace('[', "").replace(']', "").replace("'", "").replace(" ", "").split(",") #change to arr
+                for t in topics:
+                    t = t.strip()
                 viewCount = row[FieldNames.views]
                 val = (topics, viewCount)
                 y = row[FieldNames.published_date].split("-")[0]
@@ -70,14 +72,14 @@ class Parser:
                     years[y] = [val]
 
         topicsByYear = []
-        for val in years.values():
+        for (key, val) in years.items():
             topics = [[] for _ in range(len(self._view_count_categories))]
             for (t, viewCount) in val:
                 for category in range(len(self._view_count_categories)):
                     if(int(viewCount) < self._view_count_categories[category]):
-                        topics[category].append(t)
+                        topics[category].append( t )
                         break
-            topicsByYear.append(topics)
+            topicsByYear.append( (key, topics) )
         return topicsByYear
 
     def clean_transcripts(self, transcript_list: [str]) -> [[str]]:
