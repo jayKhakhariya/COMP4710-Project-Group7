@@ -12,6 +12,14 @@ import constants
 ! are considered as separate transactions.
 """
 
+"""
+Purpose:
+        - The purpose of this program is to remove punctuations, blacklisted words mentioned in the blacklist file
+          from transcript column in the data set and form a 2-D array of words that were present in the transcript.
+        
+        - It also can generate an array of topics binned by view-count categories as mentioned below
+"""
+
 
 class Parser:
     _clean_sentences = []
