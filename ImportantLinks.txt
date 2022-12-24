@@ -1,0 +1,5 @@
+Github Repo
+https://github.com/jayKhakhariya/COMP4710-Project-Group7
+
+Kaggle Data
+https://www.kaggle.com/datasets/miguelcorraljr/ted-ultimate-dataset
